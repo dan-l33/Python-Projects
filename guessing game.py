@@ -1,22 +1,5 @@
-"""
-import os
-os.system('cls')
+from time import sleep
 
-while check == "fail":
-    guess = input("Enter a value between " + str(min_val) + " and " + str(max_val) + ": ")
-    valid_guess(guess)
-    if check == "pass":
-        guess_count =+ 1
-        break
-
-def guess_loop():
-    global guess
-    global first_guess
-    while check == "fail":
-        guess = input("Enter a value between " + str(min_val) + " and " + str(max_val) + ":")
-        valid_guess(guess)
-
-"""
 check = "fail"
 difficulty = ""
 guess_count = 0
@@ -24,8 +7,6 @@ max_val = 10
 min_val = 0
 
 print("Welcome to Dan's Number Guessing Game!")
-
-from time import sleep
 sleep(0.75)
 
 while difficulty not in ("E", "e", "M", "m", "H", "h"):
