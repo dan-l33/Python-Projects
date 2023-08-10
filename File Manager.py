@@ -8,6 +8,7 @@
 
 import os
 import csv
+import shutil
 
 def delete_fileless_branches():
     path = r"C:\Users\Dan\Desktop\New Folder"
@@ -15,29 +16,49 @@ def delete_fileless_branches():
     #identify empty folders and add folderpath to list
     for root, dirs, files in os.walk(path):
         if not len(dirs) and not len(files):
-            empty.append(root)
+            if root == path:
+                print("Path is empty")
+                exit(0)
+            else:
+                empty.append(root)
 
-    #for each item in empty list
-    #find earliest ancestor containing zero files within itself incl. subfolders
-    #then add folderpath to second list
-    fileless_branch = []
-    for empty_dir in empty:
-        parent_dir = empty_dir[:empty_dir.rfind("\\")]
-        while sum([len(files) for r, d, files in os.walk(parent_dir)]) ==0:
-            empty_dir = parent_dir
+    if len(empty) == 0:
+        print("No empty folders were found")
+    else:
+        #for each item in empty list
+        #find earliest ancestor containing zero files within itself incl. subfolders
+        #then add folderpath to second list
+        fileless_branch = []
+        for empty_dir in empty:
             parent_dir = empty_dir[:empty_dir.rfind("\\")]
-            if parent_dir == path:
+            while sum([len(files) for r, d, files in os.walk(parent_dir)]) ==0:
+                empty_dir = parent_dir
+                parent_dir = empty_dir[:empty_dir.rfind("\\")]
+                if parent_dir == path:
+                    break
+
+            if empty_dir not in fileless_branch:
+                fileless_branch.append(empty_dir)
+
+        for i in empty:
+            print("empty: ", i)
+        for i in fileless_branch:
+            print("fileless_branch: ", i)
+        #Functionality to delete folderpaths in fileless_branch to be added
+        while True:
+            delete_confirm = input("Confirm deletion of fileless branches y/n: ")
+            if delete_confirm.lower() == "y":
+                for i in fileless_branch:
+                    shutil.rmtree(i)
+                print("Branches deleted")
                 break
+            elif delete_confirm.lower() == "n":
+                print("no")
+                break
+            else:
+                print("Input not recognised")
 
-        if empty_dir not in fileless_branch:
-            fileless_branch.append(empty_dir)
-
-    for i in empty:
-        print("empty: ", i)
-    for i in fileless_branch:
-        print("fileless_branch: ", i)
-    #Functionality to delete folderpaths in fileless_branch to be added
-
+delete_fileless_branches()
 def list_files():
     count = 0
     dir = r"C:\Users\Dan\PycharmProjects"
