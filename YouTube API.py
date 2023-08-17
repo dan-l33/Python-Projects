@@ -5,7 +5,6 @@
 
 import os
 import config
-#import google_auth_oauthlib.flow
 from googleapiclient.discovery import build
 import googleapiclient.errors
 import pandas as pd
@@ -14,9 +13,6 @@ import requests
 import re
 import json
 from dateutil import parser
-
-
-#channel_ids = []
 
 url  = input("Enter url of channel home e.g. https://www.youtube.com/@Formula1: ")
 soup = BeautifulSoup(requests.get(url, cookies={"CONSENT": "YES+1"}).text, "html.parser")
@@ -27,23 +23,16 @@ json_data = json.loads(data)
 
 channel_id = json_data["header"]["c4TabbedHeaderRenderer"]["channelId"]
 
-#channel_ids.append(channel_id)
-
 youtube = build("youtube", "v3", developerKey = config.YouTube_API)
-
-#channel_ids = ["UC073quTeFarhKNe8ZuC6Qig",]
 
 def get_channel_stats(youtube, channel_ids):
     all_data = []
 
     request = youtube.channels().list(
         part = "snippet,contentDetails,statistics",
-        #id = ",".join(channel_ids))
         id = channel_id)
 
     response = request.execute()
-
-    #print(response)
 
     for item in response ["items"]:
         global playlist_id
@@ -61,8 +50,6 @@ def get_channel_stats(youtube, channel_ids):
 
 channel_stats = get_channel_stats(youtube, channel_id)
 print(channel_stats)
-
-#playlist_id = "UU073quTeFarhKNe8ZuC6Qig"
 
 def get_video_ids(youtube, playlist_id):
     video_ids = []
@@ -93,8 +80,6 @@ def get_video_ids(youtube, playlist_id):
     return video_ids
 
 video_ids = get_video_ids(youtube, playlist_id)
-#print(video_ids)
-
 
 def get_video_details(youtube, video_ids):
     all_video_info = []
@@ -126,7 +111,6 @@ def get_video_details(youtube, video_ids):
     return pd.DataFrame(all_video_info)
 
 video_df = get_video_details(youtube, video_ids)
-#print(video_df)
 
 # Convert count columns to numeric
 numeric_cols = ['viewCount', 'likeCount', 'favouriteCount', 'commentCount']
